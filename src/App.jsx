@@ -11,14 +11,11 @@ import {
 } from "recharts";
 import { motion } from "framer-motion";
 
-
 import { IoIosSettings } from "react-icons/io";  
 import { FaChartBar, FaBoxOpen, FaDollarSign, FaMapMarkerAlt } from "react-icons/fa"; 
 import { HiChartBar, HiOutlineCalendar, HiOutlineTrendingUp } from "react-icons/hi"; 
 import { ExclamationTriangleIcon } from "@heroicons/react/24/solid"; 
 
-
-// .env से API Base URL
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 // ---------------- ErrorMessage ----------------
@@ -165,16 +162,15 @@ function ForecastForm({ filters, setFilters, onSubmit, loading }) {
         <h2 className="font-semibold text-lg flex items-center gap-2">
           {icon} {title}
         </h2>
-        <span className="text-xl">{openSection[section] ? "−" : "+"}</span>
+        <motion.span
+          animate={{ rotate: openSection[section] ? 45 : 0 }}
+          className="text-xl block transition-transform"
+        >
+          +
+        </motion.span>
       </div>
       {openSection[section] && (
-        <motion.div
-          initial={{ height: 0, opacity: 0 }}
-          animate={{ height: "auto", opacity: 1 }}
-          className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4"
-        >
-          {children}
-        </motion.div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">{children}</div>
       )}
     </div>
   );
@@ -300,7 +296,7 @@ export default function App() {
     setError("");
     setForecastData(null);
     try {
-      const response = await axios.post(`${API_BASE_URL}/api/forecast`, {
+      const response = await axios.post(`${API_BASE_URL}`, {
         days: filters.days,
         product_id: filters.productId,
         category: filters.category,
