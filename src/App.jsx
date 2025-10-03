@@ -11,10 +11,19 @@ import {
 } from "recharts";
 import { motion } from "framer-motion";
 
-import { IoIosSettings } from "react-icons/io";  
-import { FaChartBar, FaBoxOpen, FaDollarSign, FaMapMarkerAlt } from "react-icons/fa"; 
-import { HiChartBar, HiOutlineCalendar, HiOutlineTrendingUp } from "react-icons/hi"; 
-import { ExclamationTriangleIcon } from "@heroicons/react/24/solid"; 
+import { IoIosSettings } from "react-icons/io";
+import {
+  FaChartBar,
+  FaBoxOpen,
+  FaDollarSign,
+  FaMapMarkerAlt,
+} from "react-icons/fa";
+import {
+  HiChartBar,
+  HiOutlineCalendar,
+  HiOutlineTrendingUp,
+} from "react-icons/hi";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/solid";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
@@ -32,11 +41,34 @@ function ErrorMessage({ message }) {
   );
 }
 
+// ---------------- WarningsBox ----------------
+function WarningsBox({ warnings }) {
+  if (!warnings || warnings.length === 0) return null;
+
+  return (
+    <div className="bg-gray-800/80 p-5 rounded-2xl shadow-md text-red-300 space-y-2 mt-6">
+      <h2 className="text-lg font-bold flex items-center gap-2 text-red-400">
+        <ExclamationTriangleIcon className="w-6 h-6" />
+        Warnings / Alerts
+      </h2>
+      <ul className="list-disc list-inside space-y-1">
+        {warnings.map((warn, idx) => (
+          <li key={idx} className="text-sm leading-relaxed">
+            {warn}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 // ---------------- ForecastChart ----------------
 function ForecastChart({ data }) {
   const chartData = Object.entries(data.Forecast).map(([date, value]) => ({
     date,
-    forecast: value,
+    forecast: value.forecast,
+    lower: value.lower_bound,
+    upper: value.upper_bound,
   }));
 
   return (
@@ -62,7 +94,19 @@ function ForecastChart({ data }) {
             dataKey="forecast"
             stroke="#4f46e5"
             strokeWidth={3}
-            dot={{ r: 5, fill: "#818cf8" }}
+            dot={{ r: 4, fill: "#818cf8" }}
+          />
+          <Line
+            type="monotone"
+            dataKey="lower"
+            stroke="#22c55e"
+            strokeDasharray="5 5"
+          />
+          <Line
+            type="monotone"
+            dataKey="upper"
+            stroke="#ef4444"
+            strokeDasharray="5 5"
           />
         </LineChart>
       </ResponsiveContainer>
@@ -90,6 +134,12 @@ function ForecastTable({ data }) {
                   <span>Forecast</span>
                 </div>
               </th>
+              <th className="px-4 py-2 border-b border-gray-600">
+                Lower Bound
+              </th>
+              <th className="px-4 py-2 border-b border-gray-600">
+                Upper Bound
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -97,7 +147,13 @@ function ForecastTable({ data }) {
               <tr key={date} className="hover:bg-gray-700/50 transition-colors">
                 <td className="px-4 py-2 border-b border-gray-600">{date}</td>
                 <td className="px-4 py-2 border-b border-gray-600 font-semibold">
-                  {value}
+                  {value.forecast}
+                </td>
+                <td className="px-4 py-2 border-b border-gray-600 text-green-400">
+                  {value.lower_bound}
+                </td>
+                <td className="px-4 py-2 border-b border-gray-600 text-red-400">
+                  {value.upper_bound}
                 </td>
               </tr>
             ))}
@@ -170,7 +226,9 @@ function ForecastForm({ filters, setFilters, onSubmit, loading }) {
         </motion.span>
       </div>
       {openSection[section] && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">{children}</div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4">
+          {children}
+        </div>
       )}
     </div>
   );
@@ -210,7 +268,11 @@ function ForecastForm({ filters, setFilters, onSubmit, loading }) {
         </div>
       </Section>
 
-      <Section title="Pricing & Discount" icon={<FaDollarSign />} section="pricing">
+      <Section
+        title="Pricing & Discount"
+        icon={<FaDollarSign />}
+        section="pricing"
+      >
         <div>
           <label className="block mb-1 font-semibold">Max Price</label>
           <input
@@ -228,13 +290,19 @@ function ForecastForm({ filters, setFilters, onSubmit, loading }) {
             min={0}
             max={100}
             value={filters.minDiscount}
-            onChange={(e) => handleChange("minDiscount", Number(e.target.value))}
+            onChange={(e) =>
+              handleChange("minDiscount", Number(e.target.value))
+            }
             className="w-full p-2 rounded-lg bg-slate-800 border border-slate-700 text-gray-100"
           />
         </div>
       </Section>
 
-      <Section title="Region & Rating" icon={<FaMapMarkerAlt />} section="other">
+      <Section
+        title="Region & Rating"
+        icon={<FaMapMarkerAlt />}
+        section="other"
+      >
         <div>
           <label className="block mb-1 font-semibold">Region</label>
           <select
@@ -377,9 +445,8 @@ export default function App() {
               <ForecastTable data={forecastData} />
               <ForecastChart data={forecastData} />
             </div>
-            {forecastData.Warnings?.length > 0 && (
-              <ErrorMessage message={forecastData.Warnings[0]} />
-            )}
+            {/* ✅ Show Warnings */}
+            <WarningsBox warnings={forecastData.Warnings} />
           </div>
         )}
       </main>
