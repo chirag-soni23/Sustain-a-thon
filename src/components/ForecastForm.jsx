@@ -1,8 +1,14 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { FaBoxOpen, FaDollarSign, FaMapMarkerAlt } from "react-icons/fa";
+import { Link } from "react-router-dom";
 
-export default function ForecastForm({ filters, setFilters, onSubmit, loading }) {
+export default function ForecastForm({
+  filters,
+  setFilters,
+  onSubmit,
+  loading,
+}) {
   const [openSection, setOpenSection] = useState({
     productInfo: true,
     pricing: false,
@@ -78,7 +84,11 @@ export default function ForecastForm({ filters, setFilters, onSubmit, loading })
         </div>
       </Section>
 
-      <Section title="Pricing & Discount" icon={<FaDollarSign />} section="pricing">
+      <Section
+        title="Pricing & Discount"
+        icon={<FaDollarSign />}
+        section="pricing"
+      >
         <div>
           <label className="block mb-1 font-semibold">Max Price</label>
           <input
@@ -96,13 +106,19 @@ export default function ForecastForm({ filters, setFilters, onSubmit, loading })
             min={0}
             max={100}
             value={filters.minDiscount}
-            onChange={(e) => handleChange("minDiscount", Number(e.target.value))}
+            onChange={(e) =>
+              handleChange("minDiscount", Number(e.target.value))
+            }
             className="w-full p-2 rounded-lg bg-slate-800 border border-slate-700 text-gray-100"
           />
         </div>
       </Section>
 
-      <Section title="Region & Rating" icon={<FaMapMarkerAlt />} section="other">
+      <Section
+        title="Region & Rating"
+        icon={<FaMapMarkerAlt />}
+        section="other"
+      >
         <div>
           <label className="block mb-1 font-semibold">Region</label>
           <select
@@ -139,6 +155,14 @@ export default function ForecastForm({ filters, setFilters, onSubmit, loading })
       >
         {loading ? "Loading..." : "Get Forecast"}
       </motion.button>
+      <Link to={"/tariff"}>
+      <motion.button
+        whileTap={{ scale: 0.95 }}
+        className="w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-semibold transition disabled:opacity-60"
+      >
+        Tarrif
+      </motion.button>
+      </Link>
     </div>
   );
 }
