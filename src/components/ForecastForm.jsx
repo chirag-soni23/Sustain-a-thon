@@ -156,12 +156,12 @@ export default function ForecastForm({
         {loading ? "Loading..." : "Get Forecast"}
       </motion.button>
       <Link to={"/tariff"}>
-      <motion.button
-        whileTap={{ scale: 0.95 }}
-        className="w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-semibold transition disabled:opacity-60"
-      >
-        Tarrif
-      </motion.button>
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          className="w-full px-4 py-3 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-semibold transition disabled:opacity-60"
+        >
+          Tarrif
+        </motion.button>
       </Link>
     </div>
   );
