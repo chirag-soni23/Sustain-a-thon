@@ -163,6 +163,14 @@ export default function ForecastForm({
           Tarrif
         </motion.button>
       </Link>
+      <a href="https://9000-firebase-studio-1759539918975.cluster-owzhzna3l5cj6tredjpnwucna4.cloudworkstations.dev/" target="_blank">
+        <motion.button
+          whileTap={{ scale: 0.95 }}
+          className="w-full px-4 py-3 mt-2 bg-indigo-600 hover:bg-indigo-500 rounded-xl font-semibold transition disabled:opacity-60"
+        >
+          Inventory Saarthi
+        </motion.button>
+      </a>
     </div>
   );
 }
